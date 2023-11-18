@@ -32,6 +32,37 @@ class Channel:
         ]
         self.view_count: int = self.channel_info["items"][0]["statistics"]["viewCount"]
 
+    def __str__(self) -> str:
+        return f"{self.title} ({self.url})"
+
+    def __add__(self, other) -> int:
+        """Метод для сложения двух экземпляров класса."""
+        return int(self.subscriber_count) + int(other.subscriber_count)
+
+    def __sub__(self, other) -> int:
+        """Метод для вычитания двух экземпляров класса."""
+        return int(self.subscriber_count) - int(other.subscriber_count)
+
+    def __eq__(self, other) -> bool:
+        """Метод для операции сравнения '==' двух экземпляров класса."""
+        return int(self.subscriber_count) == int(other.subscriber_count)
+
+    def __gt__(self, other) -> bool:
+        """Метод для операции сравнения '>' двух экземпляров класса."""
+        return int(self.subscriber_count) > int(other.subscriber_count)
+
+    def __lt__(self, other) -> bool:
+        """Метод для операции сравнения '<' двух экземпляров класса."""
+        return int(self.subscriber_count) < int(other.subscriber_count)
+
+    def __ge__(self, other) -> bool:
+        """Метод для операции сравнения '>=' двух экземпляров класса."""
+        return int(self.subscriber_count) >= int(other.subscriber_count)
+
+    def __le__(self, other) -> bool:
+        """Метод для операции сравнения '<=' двух экземпляров класса."""
+        return int(self.subscriber_count) <= int(other.subscriber_count)
+
     @property
     def channel_id(self) -> str:
         return self.__channel_id
