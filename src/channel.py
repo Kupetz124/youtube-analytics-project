@@ -10,26 +10,34 @@ class Channel:
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
-        self.__api_object = build(
-            "youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY")
-        )
+        self.youtube = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY"))
         self.channel_info = (
-            self.__api_object.channels()
+            self.youtube.channels()
             .list(id=channel_id, part="snippet,statistics")
             .execute()
         )
+        # id канала
         self.__channel_id: str = channel_id
+
+        # Название канала
         self.title: str = self.channel_info["items"][0]["snippet"]["title"]
+
+        # Описание канала
         self.channel_description: str = self.channel_info["items"][0]["snippet"][
             "description"
         ]
+        # ссылка на канал
         self.url: str = f"https://www.youtube.com/channel/{self.__channel_id}"
+
+        # количество подписчиков канала
         self.subscriber_count: int = self.channel_info["items"][0]["statistics"][
             "subscriberCount"
         ]
+        # количество видео на канале
         self.video_count: int = self.channel_info["items"][0]["statistics"][
             "videoCount"
         ]
+        # количество просмотров на канале
         self.view_count: int = self.channel_info["items"][0]["statistics"]["viewCount"]
 
     def __str__(self) -> str:
@@ -65,6 +73,9 @@ class Channel:
 
     @property
     def channel_id(self) -> str:
+        """
+        Возвращает значение __channel_id (id канала)
+        """
         return self.__channel_id
 
     @classmethod
