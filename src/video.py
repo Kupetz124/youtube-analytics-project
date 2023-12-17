@@ -1,10 +1,12 @@
 import os
 
 # необходимо установить через: pip install google-api-python-client
-from googleapiclient.discovery import build
+from googleapiclient.discovery import build  # type: ignore
 
 
 class Video:
+    """Класс для получения информации о видео по его id"""
+
     def __init__(self, video_id: str) -> None:
         """Экземпляр инициализируется id видео. Дальше все данные будут подтягиваться по API."""
         youtube = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY"))
@@ -20,7 +22,7 @@ class Video:
         self.video_title: str = self.video_response["items"][0]["snippet"]["title"]
 
         # Ссылка на видео
-        self.url = f"https://youtu.be/gaoc9MPZ4bw{self.video_id}"
+        self.url = f"https://youtu.be/{self.video_id}"
 
         # Количество просмотров
         self.view_count: int = self.video_response["items"][0]["statistics"][
@@ -43,3 +45,8 @@ class PLVideo(Video):
 
         # id плейлиста
         self.playlist_id = playlist_id
+
+
+if __name__ == "__main__":
+    vd = Video("AWX4JnAnjBE")
+    print(vd.url)

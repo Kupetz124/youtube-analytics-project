@@ -2,7 +2,7 @@ import json
 import os
 
 # необходимо установить через: pip install google-api-python-client
-from googleapiclient.discovery import build
+from googleapiclient.discovery import build  # type: ignore
 
 
 class Channel:
