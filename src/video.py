@@ -1,7 +1,12 @@
 import os
 
+from dotenv import load_dotenv
 # необходимо установить через: pip install google-api-python-client
 from googleapiclient.discovery import build  # type: ignore
+
+load_dotenv()
+
+API_YOUTUBE = os.getenv("YOUTUBE_API_KEY")
 
 
 class Video:
@@ -9,33 +14,53 @@ class Video:
 
     def __init__(self, video_id: str) -> None:
         """Экземпляр инициализируется id видео. Дальше все данные будут подтягиваться по API."""
-        youtube = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY"))
-        self.video_response = (
-            youtube.videos()
-            .list(part="snippet,statistics,contentDetails,topicDetails", id=video_id)
-            .execute()
-        )
-        # id видео
-        self.video_id = video_id
 
-        # Название видео
-        self.video_title: str = self.video_response["items"][0]["snippet"]["title"]
+        try:
+            youtube = build("youtube", "v3", developerKey=API_YOUTUBE)
+            self.video_response = (
+                youtube.videos()
+                .list(
+                    part="snippet,statistics,contentDetails,topicDetails", id=video_id
+                )
+                .execute()
+            )
+            # id видео
+            self.video_id: str = video_id
 
-        # Ссылка на видео
-        self.url = f"https://youtu.be/{self.video_id}"
+            # Название видео
+            self.title: str | None = self.video_response["items"][0]["snippet"]["title"]
 
-        # Количество просмотров
-        self.view_count: int = self.video_response["items"][0]["statistics"][
-            "viewCount"
-        ]
+            # Ссылка на видео
+            self.url: str | None = f"https://youtu.be/{self.video_id}"
 
-        # Количество лайков
-        self.like_count: int = self.video_response["items"][0]["statistics"][
-            "likeCount"
-        ]
+            # Количество просмотров
+            self.view_count: int | None = self.video_response["items"][0]["statistics"][
+                "viewCount"
+            ]
+
+            # Количество лайков
+            self.like_count: int | None = self.video_response["items"][0]["statistics"][
+                "likeCount"
+            ]
+        except IndexError:
+
+            # id видео
+            self.video_id = video_id
+
+            # Ссылка на видео
+            self.url = None
+
+            # Название видео
+            self.title = None
+
+            # Количество просмотров
+            self.view_count = None
+
+            # Количество лайков
+            self.like_count = None
 
     def __str__(self):
-        return self.video_title
+        return self.title
 
 
 class PLVideo(Video):
@@ -45,8 +70,3 @@ class PLVideo(Video):
 
         # id плейлиста
         self.playlist_id = playlist_id
-
-
-if __name__ == "__main__":
-    vd = Video("AWX4JnAnjBE")
-    print(vd.url)
