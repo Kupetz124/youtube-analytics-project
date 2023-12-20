@@ -2,9 +2,13 @@ import datetime
 import os
 
 import isodate  # type: ignore
-
+from dotenv import load_dotenv
 # необходимо установить через: pip install google-api-python-client
 from googleapiclient.discovery import build  # type: ignore
+
+load_dotenv()
+
+API_YOUTUBE = os.getenv("YOUTUBE_API_KEY")
 
 
 class PlayList:
@@ -13,7 +17,7 @@ class PlayList:
     def __init__(self, playlist_id: str) -> None:
         """Экземпляр инициализируется по id плейлиста. Дальше все данные будут подтягиваться по API."""
 
-        self.youtube = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY"))
+        self.youtube = build("youtube", "v3", developerKey=API_YOUTUBE)
 
         # id плейлиста
         self.playlist_id = playlist_id
